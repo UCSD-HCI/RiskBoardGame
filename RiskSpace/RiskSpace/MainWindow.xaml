@@ -1,0 +1,13 @@
+﻿<mt:Window x:Class="RiskSpace.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mt="http://schemas.multitouch.com/Multitouch/2008/04"
+        Title="MainWindow" Height="1200" Width="1600" Loaded="Window_Loaded">
+    <Grid Background="Black">
+        <mt:TouchablePanel>
+            <TextBlock Text="Hello World" FontSize="72" FontWeight="Bold" Foreground="White" Background="LightBlue" Canvas.Left="553" Canvas.Top="547" />
+        </mt:TouchablePanel>
+        <!--<mt:InkCanvas></mt:InkCanvas>-->
+    </Grid>
+</mt:Window>
+    
