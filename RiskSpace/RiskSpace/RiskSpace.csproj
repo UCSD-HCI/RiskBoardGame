@@ -69,6 +69,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="riskmap2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -99,6 +103,26 @@
       <Project>{F3219531-A4B9-4B65-B7EA-27C43E98C21D}</Project>
       <Name>Multitouch.Framework.WPF</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\riskmap_0000_Layer-3.png" />
+    <Resource Include="Images\riskmap_0001_Layer-4.png" />
+    <Resource Include="Images\riskmap_0002_Layer-5.png" />
+    <Resource Include="Images\riskmap_0003_Layer-6.png" />
+    <Resource Include="Images\riskmap_0004_Layer-7.png" />
+    <Resource Include="Images\riskmap_0005_Layer-8.png" />
+    <Resource Include="Images\riskmap_0006_Layer-9.png" />
+    <Resource Include="Images\riskmap_0009_Layer-10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="riskmap2_files\image0.png" />
+    <Resource Include="riskmap2_files\image1.png" />
+    <Resource Include="riskmap2_files\image2.png" />
+    <Resource Include="riskmap2_files\image3.png" />
+    <Resource Include="riskmap2_files\image4.png" />
+    <Resource Include="riskmap2_files\image5.png" />
+    <Resource Include="riskmap2_files\image6.png" />
+    <Resource Include="riskmap2_files\image7.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

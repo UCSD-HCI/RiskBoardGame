@@ -88,7 +88,7 @@ namespace TuioProvider
 			lock (contactsQueue)
 			{
                 Contact contact = new TuioContact(cursor, state, monitorSize);
-                Trace.WriteLine(contact.Position.ToString());
+                //Trace.WriteLine(contact.Position.ToString());
 				contactsQueue.Enqueue(contact);
 			}
 		}
