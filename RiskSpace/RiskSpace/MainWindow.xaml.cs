@@ -20,36 +20,101 @@ namespace RiskSpace
     /// </summary>
     public partial class MainWindow : Multitouch.Framework.WPF.Controls.Window
     {
+        private StateManager stateManager;
+        private PlayerManager playerManager;
+
         public MainWindow()
         {
             InitializeComponent();
+            playerManager = new PlayerManager(riskMap);
+            stateManager = new StateManager(playerManager);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //africaImg.AddHandler(MultitouchScreen.NewContactEvent, (NewContactEventHandler)africaImg_NewContact);
-            //backImg.AddHandler(MultitouchScreen.NewContactEvent, (NewContactEventHandler)Image_NewContact);
-            //testButton.AddHandler(MultitouchScreen.NewContactEvent, (NewContactEventHandler)Image_NewContact);
+            msgControl.UpdateMessage(stateManager.State, playerManager.GetPlayer(stateManager.ActivePlayerId));
         }
 
-        private void Image_NewContact(object sender, Multitouch.Framework.WPF.Input.NewContactEventArgs e)
+        private void riskMap_CountryClick(object sender, CountryContactEventArgs e)
         {
+            switch (stateManager.State)
+            {
+                case GameState.ChooseCountry:
+                    chooseCountry(e.CountryId);
+                    break;
+
+                case GameState.AddArmy:
+                    addArmy(e.CountryId);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void refreshViews()
+        {
+            playerInfo1.Update(playerManager.GetPlayer(1), stateManager.ActivePlayerId == 1);
+            playerInfo2.Update(playerManager.GetPlayer(2), stateManager.ActivePlayerId == 2);
+
+            //udpate messages
+            msgControl.UpdateMessage(stateManager.State, playerManager.GetPlayer(stateManager.ActivePlayerId), stateManager.AvailabeNewArmy);
+        }
+
+        private void chooseCountry(string countryId)
+        {
+            ArmyViz armyViz = riskMap.GetArmyViz(countryId);
+
+            if (armyViz.PlayerId != 0)
+            {
+                return;
+            }
+
+            armyViz.PlayerId = stateManager.ActivePlayerId;
+            armyViz.AddArmy();
+
+            //check if all countries are picked
+            int blankCount = 0;
+            foreach (ArmyViz eachArmyViz in riskMap.GetAllArmyViz())
+            {
+                if (eachArmyViz.PlayerId == 0)
+                {
+                    blankCount++;
+                    armyViz = eachArmyViz;
+
+                    if (blankCount >= 2)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (blankCount == 1)
+            {
+                armyViz.PlayerId = stateManager.ActivePlayerId == PlayerManager.PlayerNum ? 1 : stateManager.ActivePlayerId + 1;
+                armyViz.AddArmy();
+                stateManager.Finish();
+            }
+            else
+            {
+                stateManager.Next();
+            }               
+                
+            refreshViews();
             
         }
 
-        private void Image_ContactRemoved(object sender, ContactEventArgs e)
+        private void addArmy(string countryId)
         {
-            
-        }
+            ArmyViz armyViz = riskMap.GetArmyViz(countryId);
+            if (riskMap.GetArmyViz(countryId).PlayerId != stateManager.ActivePlayerId)
+            {
+                return;
+            }
 
-        private void Image_ContactEnter(object sender, ContactEventArgs e)
-        {
-            (sender as Image).Opacity = 1.0;
-        }
-
-        private void Image_ContactLeave(object sender, ContactEventArgs e)
-        {
-            (sender as Image).Opacity = 0.5;
+            armyViz.AddArmy();
+            stateManager.Next();
+            refreshViews();
         }
     }
 }

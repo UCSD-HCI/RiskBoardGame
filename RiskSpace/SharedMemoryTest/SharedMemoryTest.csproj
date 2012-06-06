@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{83920FBD-D241-469E-82E1-6A9FEDAAEB90}</ProjectGuid>
+    <ProjectGuid>{FB5C27DC-72BA-46A2-ABA7-D044A0268763}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RiskSpace</RootNamespace>
-    <AssemblyName>RiskSpace</AssemblyName>
+    <RootNamespace>SharedMemoryTest</RootNamespace>
+    <AssemblyName>SharedMemoryTest</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -38,8 +38,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -57,29 +55,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ArmyViz.xaml.cs">
-      <DependentUpon>ArmyViz.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GameMessageControl.xaml.cs">
-      <DependentUpon>GameMessageControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Player.cs" />
-    <Compile Include="PlayerInfoControl.xaml.cs">
-      <DependentUpon>PlayerInfoControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerManager.cs" />
-    <Compile Include="RiskMap.xaml.cs">
-      <DependentUpon>RiskMap.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="StateManager.cs" />
-    <Page Include="ArmyViz.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GameMessageControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -92,18 +67,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="PlayerInfoControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="RiskMap.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="riskmap2.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -128,32 +91,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\MultiTouchVista\Framework\Multitouch.Framework.WPF\Multitouch.Framework.WPF.csproj">
-      <Project>{F3219531-A4B9-4B65-B7EA-27C43E98C21D}</Project>
-      <Name>Multitouch.Framework.WPF</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\riskmap_0000_Layer-3.png" />
-    <Resource Include="Images\riskmap_0001_Layer-4.png" />
-    <Resource Include="Images\riskmap_0002_Layer-5.png" />
-    <Resource Include="Images\riskmap_0003_Layer-6.png" />
-    <Resource Include="Images\riskmap_0004_Layer-7.png" />
-    <Resource Include="Images\riskmap_0005_Layer-8.png" />
-    <Resource Include="Images\riskmap_0006_Layer-9.png" />
-    <Resource Include="Images\riskmap_0009_Layer-10.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="riskmap2_files\image0.png" />
-    <Resource Include="riskmap2_files\image1.png" />
-    <Resource Include="riskmap2_files\image2.png" />
-    <Resource Include="riskmap2_files\image3.png" />
-    <Resource Include="riskmap2_files\image4.png" />
-    <Resource Include="riskmap2_files\image5.png" />
-    <Resource Include="riskmap2_files\image6.png" />
-    <Resource Include="riskmap2_files\image7.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
