@@ -32,8 +32,17 @@ namespace RiskSpace
 
         public GameState State { get; private set; }
         public int ActivePlayerId { get; private set; }
-        public  int RoundCount { get; private set; }
+        public int RoundCount { get; private set; }
         public int AvailabeNewArmy { get; private set; }
+        public int MovableArmy { get; private set; }
+        public bool IsErrored { get; private set; }
+        public string AttackSource {get; private set;}
+        public string AttackDest {get; private set;}
+        public int AttackerPoints { get; private set; }
+        public int DefenderPoints { get; private set; }
+        public bool IsAnimating { get; set; }
+        public int AttackerMaxDiceNum { get; private set; }
+        public int DefenderMaxDiceNum { get; private set; }
 
         public StateManager(PlayerManager playerManager)
         {
@@ -85,6 +94,7 @@ namespace RiskSpace
                     break;
             }
 
+            IsErrored = false;
             refreshPlayers();
         }
 
@@ -99,15 +109,23 @@ namespace RiskSpace
                     break;
 
                 case GameState.AttackChooseSource:
-                    State = GameState.AttackPickArmy;
+                    State = GameState.AttackChooseDest;
                     break;
 
-                case GameState.AttackPickArmy:
-                    State = GameState.AttackChooseDest;
+                case GameState.AttackChooseDest:
+                    State = GameState.AttackWaitDice;
                     break;
 
                 case GameState.AttackWaitDice:
                     State = GameState.AttackAnimation;
+                    break;
+
+                case GameState.AttackAnimation:
+                    State = MovableArmy > 0 ? GameState.AttackPickArmy : GameState.AttackChooseSource;
+                    break;
+
+                case GameState.AttackPickArmy:
+                    State = GameState.AttackChooseSource;
                     break;
 
                 default:
@@ -115,6 +133,7 @@ namespace RiskSpace
                     break;
             }
 
+            IsErrored = false;
             refreshPlayers();
         }
 
@@ -122,11 +141,11 @@ namespace RiskSpace
         {
             switch (State)
             {
-                case GameState.AttackPickArmy:
+                case GameState.AttackChooseDest:
                     State = GameState.AttackChooseSource;
                     break;
 
-                case GameState.AttackChooseDest:
+                case GameState.AttackWaitDice:
                     State = GameState.AttackChooseSource;
                     break;
 
@@ -135,17 +154,73 @@ namespace RiskSpace
                     break;
             }
 
+            IsErrored = false;
             refreshPlayers();
         }
 
         public void RoundPass()
         {
             Debug.Assert(State == GameState.AttackChooseSource);
+            refreshAvailabeNewArmy();
             State = GameState.AddArmy;
             if (!nextPlayer())
             {
                 RoundCount++;
             }
+            IsErrored = false;
+        }
+
+        public void Error()
+        {
+            switch (State)
+            {
+                case GameState.AttackWaitDice:
+                    break;
+
+                default:
+                    Debug.Assert(false);
+                    break;
+            }
+
+            IsErrored = true;
+        }
+
+        public void AttackSourceSelected(string sourceId, int attackerMaxDiceNum)
+        {
+            Debug.Assert(State == GameState.AttackChooseSource);
+            this.AttackSource = sourceId;
+            this.AttackerMaxDiceNum = attackerMaxDiceNum;
+            Finish();
+        }
+
+        public void AttackDestSelected(string destId, int defenderMaxDiceNum)
+        {
+            Debug.Assert(State == GameState.AttackChooseDest);
+            this.AttackDest = destId;
+            this.DefenderMaxDiceNum = defenderMaxDiceNum;
+            Finish();
+        }
+
+        public void AttackDiceDetected(int attackerPoints, int defenderPoints)
+        {
+            Debug.Assert(State == GameState.AttackWaitDice);
+            this.AttackerPoints = attackerPoints;
+            this.DefenderPoints = defenderPoints;
+            Finish();
+        }
+
+        public void Win(int movableArmy)
+        {
+            Debug.Assert(State == GameState.AttackAnimation);
+            this.MovableArmy = movableArmy;
+            Finish();
+        }
+
+        public void Lose(int movableArmy)
+        {
+            Debug.Assert(State == GameState.AttackAnimation);
+            this.MovableArmy = 0;
+            Finish();
         }
 
         private void refreshPlayers()

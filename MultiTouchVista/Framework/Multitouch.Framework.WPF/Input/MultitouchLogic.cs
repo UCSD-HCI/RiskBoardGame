@@ -25,7 +25,7 @@ namespace Multitouch.Framework.WPF.Input
 
 		MultitouchLogic(InputManager inputManager)
 		{
-			if (!MouseHelper.SingleMouseFallback)
+			if (!MouseHelper.SingleMouseFallback && !MultitouchScreen.AllowNonContactEvents)    //modified by Wander
 				Mouse.OverrideCursor = Cursors.None;
 
 			ContactsManager = new ContactsManager(inputManager.Dispatcher);

@@ -24,10 +24,10 @@ namespace Multitouch.Framework.WPF.Input
 			contactsQueue = new Queue<RawMultitouchReport>();
 			inputManagerProcessInput = InputManagerProcessInput;
 
-			contactHandler = new ContactHandler(((HwndSource)source).Handle);
-			contactHandler.ContactMoved += HandleContact;
-			contactHandler.ContactRemoved += HandleContact;
-			contactHandler.NewContact += HandleContact;
+            contactHandler = new ContactHandler(((HwndSource)source).Handle);
+            contactHandler.ContactMoved += HandleContact;
+            contactHandler.ContactRemoved += HandleContact;
+            contactHandler.NewContact += HandleContact;
 
 			inputManager = InputManager.Current;
 			multitouchLogic = MultitouchLogic.Current;

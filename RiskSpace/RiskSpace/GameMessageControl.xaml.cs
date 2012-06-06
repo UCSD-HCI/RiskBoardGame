@@ -25,17 +25,33 @@ namespace RiskSpace
             InitializeComponent();
         }
 
-        public void UpdateMessage(GameState state, Player activePlayer, int availabeNewArmy)
+        public void UpdateMessage(StateManager stateManager, PlayerManager playerManager, RiskMap map)
         {
             string msg;
-            switch (state)
+            switch (stateManager.State)
             {
                 case GameState.ChooseCountry:
                     msg = "Pick one country. ";
                     break;
 
                 case GameState.AddArmy:
-                    msg = "Add your army! (" + availabeNewArmy.ToString() + " left)";
+                    msg = "Add your army! (" + stateManager.AvailabeNewArmy.ToString() + " left)";
+                    break;
+
+                case GameState.AttackChooseSource:
+                    msg = "Choose your army to attack! ";
+                    break;
+
+                case GameState.AttackChooseDest:
+                    msg = "Where will you attack? ";
+                    break;
+
+                case GameState.AttackWaitDice:
+                    msg = "Throw dice! ";
+                    break;
+
+                case GameState.AttackPickArmy:
+                    msg = "Pick more army to defense your new territory!";
                     break;
 
                 default:
@@ -43,21 +59,30 @@ namespace RiskSpace
                     break;
             }
 
-            if (msg != null)
+            if (stateManager.State == GameState.AttackWaitDice)
             {
-                msgTextBlock.Text = "Player " + activePlayer.PlayerId + ": " + msg;
-                msgTextBlock.Foreground = new SolidColorBrush(activePlayer.MainColor);
+                Player attacker = playerManager.GetPlayer(stateManager.ActivePlayerId);
+                Player defender = playerManager.GetPlayer(map.GetArmyViz(stateManager.AttackDest).PlayerId);
+                string attackerDice = stateManager.AttackerMaxDiceNum > 1 ? "dices" : "dice";
+                string defenderDice = stateManager.DefenderMaxDiceNum > 1 ? "dices" : "dice";
+                msgTextBlock.Text = string.Format("Player {0}: Throw {1} {2}! Player {3}: Throw {4} {5}! ", 
+                    attacker.PlayerId, 
+                    stateManager.AttackerMaxDiceNum, 
+                    attackerDice,
+                    defender.PlayerId, 
+                    stateManager.DefenderMaxDiceNum,
+                    defenderDice);
+            }
+            else if (msg != null)
+            {
+                Player player = playerManager.GetPlayer(stateManager.ActivePlayerId);
+                msgTextBlock.Text = "Player " + player.PlayerId + ": " + msg;
+                msgTextBlock.Foreground = new SolidColorBrush(player.MainColor);
             }
             else
             {
                 msgTextBlock.Text = "";
             }
-        }
-
-        public void UpdateMessage(GameState state, Player activePlayer)
-        {
-            Debug.Assert(state != GameState.AddArmy);
-            UpdateMessage(state, activePlayer, 0);
         }
     }
 }

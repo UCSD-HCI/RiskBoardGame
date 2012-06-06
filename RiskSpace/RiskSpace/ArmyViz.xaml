@@ -7,7 +7,8 @@
              d:DesignHeight="100" d:DesignWidth="100" Width="100" Height="100" Visibility="Hidden">
     <Grid>
         <Viewbox HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <TextBlock Name="counterTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">1</TextBlock>
+            <TextBlock Name="counterTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
+                10</TextBlock>
         </Viewbox>
     </Grid>
 </UserControl>

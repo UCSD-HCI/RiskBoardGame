@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Multitouch.Framework.WPF.Input;
+using System.Windows.Media.Animation;
 
 namespace RiskSpace
 {
@@ -71,6 +72,30 @@ namespace RiskSpace
         public int GetCountryNum()
         {
             return counterCanvas.Children.Count;
+        }
+
+        public void DrawAttackLine(string attackerCountryId, string defenderCountryId)
+        {
+            ArmyViz fromArmy = GetArmyViz(attackerCountryId);
+            ArmyViz toArmy = GetArmyViz(defenderCountryId);
+
+            Point from = fromArmy.TranslatePoint(new Point(fromArmy.RenderSize.Width / 2, fromArmy.RenderSize.Height / 2), mainCanvas);
+            Point to = toArmy.TranslatePoint(new Point(toArmy.RenderSize.Width / 2, toArmy.RenderSize.Height / 2), mainCanvas);
+
+            DoubleAnimation xAnim = new DoubleAnimation(from.X, to.X, new Duration(TimeSpan.FromSeconds(0.5)));
+            DoubleAnimation yAnim = new DoubleAnimation(from.Y, to.Y, new Duration(TimeSpan.FromSeconds(0.5)));
+
+            attackLine.X1 = from.X;
+            attackLine.Y1 = from.Y;
+
+            attackLine.BeginAnimation(Line.X2Property, xAnim);
+            attackLine.BeginAnimation(Line.Y2Property, yAnim);
+            attackLine.Visibility = Visibility.Visible;
+        }
+
+        public void HideAttackLine()
+        {
+            attackLine.Visibility = Visibility.Hidden;
         }
 
         private void country_ContactEnter(object sender, ContactEventArgs e)
