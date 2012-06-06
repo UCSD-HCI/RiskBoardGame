@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Effects;
 using System.Windows.Media.Animation;
+using System.Diagnostics;
 
 namespace RiskSpace
 {
@@ -41,7 +42,17 @@ namespace RiskSpace
             set
             {
                 playerId = value;
-                counterTextBlock.Foreground = new SolidColorBrush(Player.GetMainColor(playerId));
+                //counterTextBlock.Foreground = new SolidColorBrush(Player.GetMainColor(playerId));
+                Brush b = new SolidColorBrush(Player.GetMainColor(playerId));
+                
+                foreach (var elem in iconPanel.Children)
+                {
+                    if (!(elem is Rectangle))
+                    {
+                        continue;
+                    }
+                    (elem as Rectangle).Fill = b;
+                }
             }
         }
 
@@ -60,8 +71,46 @@ namespace RiskSpace
             set
             {
                 armyCount = value;
-                counterTextBlock.Text = armyCount.ToString();
+                //counterTextBlock.Text = armyCount.ToString();
                 this.Visibility = armyCount > 0 ? Visibility.Visible : Visibility.Hidden;
+                if (armyCount == 0)
+                {
+                    return;
+                }
+
+                iconPanel.Children.Clear();
+                int remained = armyCount;
+                while (remained > 0)
+                {
+                    Rectangle rect = new Rectangle()
+                    {
+                        Fill = new SolidColorBrush(Player.GetMainColor(playerId)),
+                        Width = 10,
+                        Height = 10,
+                    };
+
+                    ImageSource maskSrc;
+                    if (remained >= 10)
+                    {
+                        maskSrc = new BitmapImage(new Uri(@"pack://application:,,,/Images/army_L3_mask.png"));
+                        remained -= 10;
+                    }
+                    else if (remained >= 5)
+                    {
+                        maskSrc = new BitmapImage(new Uri(@"pack://application:,,,/Images/army_L2_mask.png"));
+                        remained -= 5;
+                    }
+                    else
+                    {
+                        maskSrc = new BitmapImage(new Uri(@"pack://application:,,,/Images/army_L1_mask.png"));
+                        remained -= 1;
+                    }
+                    rect.OpacityMask = new ImageBrush(maskSrc)
+                    {
+                        Stretch = Stretch.Uniform
+                    };
+                    iconPanel.Children.Add(rect);
+                }
             }
         }
 
@@ -84,8 +133,9 @@ namespace RiskSpace
                         ShadowDepth = 4,
                     };
 
-                    counterTextBlock.Effect = shadowEffect;
-                    DoubleAnimation depthAnim = new DoubleAnimation(shadowEffect.ShadowDepth + 1, shadowEffect.ShadowDepth - 1,new Duration(TimeSpan.FromSeconds(0.5)));
+                    //counterTextBlock.Effect = shadowEffect;
+                    viewBox.Effect = shadowEffect;
+                    DoubleAnimation depthAnim = new DoubleAnimation(shadowEffect.ShadowDepth + 3, shadowEffect.ShadowDepth - 3,new Duration(TimeSpan.FromSeconds(0.5)));
                     depthAnim.RepeatBehavior = RepeatBehavior.Forever;
                     depthAnim.AutoReverse = true;
                     depthAnim.EasingFunction = new SineEase()
@@ -95,9 +145,10 @@ namespace RiskSpace
                     shadowEffect.BeginAnimation(DropShadowEffect.ShadowDepthProperty, depthAnim);
 
                     translate = new TranslateTransform(0, 0);
-                    counterTextBlock.RenderTransform = translate;
+                    //counterTextBlock.RenderTransform = translate;
+                    viewBox.RenderTransform = translate;
 
-                    DoubleAnimation translateAnim = new DoubleAnimation(-1, 1, new Duration(TimeSpan.FromSeconds(0.5)));
+                    DoubleAnimation translateAnim = new DoubleAnimation(-3, 3, new Duration(TimeSpan.FromSeconds(0.5)));
                     translateAnim.RepeatBehavior = RepeatBehavior.Forever;
                     translateAnim.AutoReverse = true;
                     translateAnim.EasingFunction = new SineEase()
@@ -109,8 +160,10 @@ namespace RiskSpace
                 }
                 else
                 {
-                    counterTextBlock.Effect = null;
-                    counterTextBlock.RenderTransform = null;
+                    //counterTextBlock.Effect = null;
+                    //counterTextBlock.RenderTransform = null;
+                    viewBox.Effect = null;
+                    viewBox.RenderTransform = null;
                 }
             }
         }

@@ -100,12 +100,12 @@ namespace RiskSpace
 
         private void country_ContactEnter(object sender, ContactEventArgs e)
         {
-            (sender as Image).Opacity = 1.0;
+            (sender as Image).Opacity = 0.5;
         }
 
         private void country_ContactLeave(object sender, ContactEventArgs e)
         {
-            (sender as Image).Opacity = 0.5;
+            (sender as Image).Opacity = 1.0;
         }
 
         private void country_ContactRemoved(object sender, ContactEventArgs e)

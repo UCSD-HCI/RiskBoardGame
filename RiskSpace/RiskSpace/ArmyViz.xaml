@@ -4,11 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="100" Width="100" Height="100" Visibility="Hidden">
+             d:DesignHeight="100" d:DesignWidth="100" Visibility="Hidden">
     <Grid>
-        <Viewbox HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <TextBlock Name="counterTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
-                10</TextBlock>
+        <Viewbox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="viewBox">
+            <!--<TextBlock Name="counterTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
+                10</TextBlock>-->
+            <WrapPanel Name="iconPanel" Orientation="Horizontal" MaxWidth="30">
+                <!--<Rectangle Name="army1" Fill="DarkRed" Width="10" Height="10">
+                    <Rectangle.OpacityMask>
+                        <ImageBrush ImageSource="Images/army_L1_mask.png" Stretch="Uniform"/>
+                    </Rectangle.OpacityMask>
+                </Rectangle>-->
+            </WrapPanel>
         </Viewbox>
     </Grid>
 </UserControl>

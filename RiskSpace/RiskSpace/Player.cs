@@ -11,7 +11,7 @@ namespace RiskSpace
         private static Color[] mainColors = new Color[]
         {
             Color.FromRgb(0,0,0),
-            Color.FromRgb(121,0,0),
+            Colors.OrangeRed, // Color.FromRgb(121,0,0),
             Color.FromRgb(54,99,0),
             Color.FromRgb(161,161,161),
             Color.FromRgb(0,88,38)

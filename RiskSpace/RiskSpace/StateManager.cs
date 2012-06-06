@@ -38,11 +38,13 @@ namespace RiskSpace
         public bool IsErrored { get; private set; }
         public string AttackSource {get; private set;}
         public string AttackDest {get; private set;}
-        public int AttackerPoints { get; private set; }
-        public int DefenderPoints { get; private set; }
+        //public List<Dice> Dices { get; private set; }
         public bool IsAnimating { get; set; }
         public int AttackerMaxDiceNum { get; private set; }
         public int DefenderMaxDiceNum { get; private set; }
+        public int AttackerLost { get; private set; }
+        public int DefenderLost { get; private set; }
+        public bool IsAttackerWin { get; private set; }
 
         public StateManager(PlayerManager playerManager)
         {
@@ -121,10 +123,12 @@ namespace RiskSpace
                     break;
 
                 case GameState.AttackAnimation:
-                    State = MovableArmy > 0 ? GameState.AttackPickArmy : GameState.AttackChooseSource;
+                    //State = MovableArmy > 0 ? GameState.AttackPickArmy : GameState.AttackChooseSource;
+                    State = GameState.AttackChooseSource;
                     break;
 
                 case GameState.AttackPickArmy:
+                    Debug.Assert(false);    //TODO
                     State = GameState.AttackChooseSource;
                     break;
 
@@ -201,15 +205,16 @@ namespace RiskSpace
             Finish();
         }
 
-        public void AttackDiceDetected(int attackerPoints, int defenderPoints)
+        public void AttackDiceDetected(int attackerLost, int defenderLost, bool attackerWin)
         {
             Debug.Assert(State == GameState.AttackWaitDice);
-            this.AttackerPoints = attackerPoints;
-            this.DefenderPoints = defenderPoints;
+            this.AttackerLost = attackerLost;
+            this.DefenderLost = defenderLost;
+            this.IsAttackerWin = attackerWin;
             Finish();
         }
 
-        public void Win(int movableArmy)
+        /*public void Win(int movableArmy)
         {
             Debug.Assert(State == GameState.AttackAnimation);
             this.MovableArmy = movableArmy;
@@ -221,7 +226,7 @@ namespace RiskSpace
             Debug.Assert(State == GameState.AttackAnimation);
             this.MovableArmy = 0;
             Finish();
-        }
+        }*/
 
         private void refreshPlayers()
         {
@@ -230,7 +235,7 @@ namespace RiskSpace
 
         private void refreshAvailabeNewArmy()
         {
-            AvailabeNewArmy = Math.Max(3, (int)(playerManager.GetPlayer(ActivePlayerId)).CountryNum / 3);
+            AvailabeNewArmy = Math.Max(3, (int)(playerManager.GetPlayer(ActivePlayerId).CountryNum / 1.5));
         }
     }
 }

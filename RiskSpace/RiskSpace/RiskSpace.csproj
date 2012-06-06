@@ -64,6 +64,9 @@
       <DependentUpon>ControlButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dice.cs" />
+    <Compile Include="DiceViz.xaml.cs">
+      <DependentUpon>DiceViz.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GameMessageControl.xaml.cs">
       <DependentUpon>GameMessageControl.xaml</DependentUpon>
     </Compile>
@@ -88,6 +91,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ControlButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DiceViz.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -171,6 +178,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\next.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\army_L1_mask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\army_L2_mask.png" />
+    <Resource Include="Images\army_L3_mask.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

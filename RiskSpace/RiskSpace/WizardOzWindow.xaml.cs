@@ -50,6 +50,7 @@ namespace RiskSpace
         {
             state = WizardOzState.Dice;
             finishButton.IsEnabled = true;
+            msgTextBlock.Text = "Locate and label dices. ";
             dices.Clear();
         }
 
@@ -130,11 +131,14 @@ namespace RiskSpace
             switch (state)
             {
                 case WizardOzState.Dice:
+                    finishButton.IsEnabled = false;
+                    msgTextBlock.Text = "";
+                    diceTextBox.Visibility = Visibility.Hidden;
+                    state = WizardOzState.Idle;
                     if (DiceFinished != null)
                     {
                         DiceFinished(this, new DiceFinishedEventArgs(dices));
                     }
-                    finishButton.IsEnabled = false;
                     break;
 
                 default:

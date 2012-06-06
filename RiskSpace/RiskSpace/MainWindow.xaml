@@ -8,10 +8,11 @@
         <my:RiskMap HorizontalAlignment="Center" Margin="0,0,0,0" x:Name="riskMap" VerticalAlignment="Bottom" Width="1600" Height="900" CountryClick="riskMap_CountryClick"/>
         <my:PlayerInfoControl x:Name="playerInfo1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,20" PlayerId="1"/>
         <my:PlayerInfoControl x:Name="playerInfo2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20" PlayerId="2"/>
-        <my:GameMessageControl x:Name="msgControl" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,30"/>
+        <my:GameMessageControl x:Name="msgControl" AnimationCompleted="msgControl_AnimationCompleted" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="200,0,200,20"/>
         <my:ArmyViz x:Name="attackArmyViz" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" IsAttacking="True" Visibility="Hidden"/>
         <my:ControlButton x:Name="controlButton1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,200" OkButtonClick="controlButton_OkButtonClick" CancelButtonClick="controlButton_CancelButtonClick" NextButtonClick="controlButton_NextButtonClick"/>
         <my:ControlButton x:Name="controlButton2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,200" OkButtonClick="controlButton_OkButtonClick" CancelButtonClick="controlButton_CancelButtonClick" NextButtonClick="controlButton_NextButtonClick"/>
+        <my:DiceViz x:Name="diceViz" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>
 </mt:Window>
     

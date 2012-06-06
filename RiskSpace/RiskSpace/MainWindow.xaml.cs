@@ -35,6 +35,8 @@ namespace RiskSpace
             stateManager = new StateManager(playerManager);
 
             wizardOzWindow = new WizardOzWindow();
+            wizardOzWindow.DiceLocated += new EventHandler<DiceEventArgs>(wizardOzWindow_DiceLocated);
+            wizardOzWindow.DiceFinished += new EventHandler<DiceFinishedEventArgs>(wizardOzWindow_DiceFinished);
             wizardOzWindow.Show();
         }
 
@@ -120,6 +122,12 @@ namespace RiskSpace
             {
                 wizardOzWindow.RequestDice();
             }
+
+            //dice viz
+            if (stateManager.State != GameState.AttackWaitDice || stateManager.IsErrored)
+            {
+                diceViz.ClearDices();
+            }
         }
 
         private void chooseCountry(string countryId)
@@ -181,7 +189,7 @@ namespace RiskSpace
         private void attackChooseSource(string countryId)
         {
             ArmyViz armyViz = riskMap.GetArmyViz(countryId);
-            if (armyViz.PlayerId != stateManager.ActivePlayerId || armyViz.ArmyCount <= 2 )
+            if (armyViz.PlayerId != stateManager.ActivePlayerId || armyViz.ArmyCount < 2 )
             {
                 return;
             }
@@ -253,6 +261,87 @@ namespace RiskSpace
             }
 
             refreshViews();
+        }
+
+        private void wizardOzWindow_DiceLocated(object sender, DiceEventArgs e)
+        {
+            Debug.Assert(stateManager.State == GameState.AttackWaitDice);
+            diceViz.ShowDice(e.Dice);
+        }
+
+
+        private void wizardOzWindow_DiceFinished(object sender, DiceFinishedEventArgs e)
+        {
+            Debug.Assert(stateManager.State == GameState.AttackWaitDice);
+
+            var whiteDices = from g in e.AllDices
+                             where g.DiceColor == DiceColor.White
+                             orderby g.Value descending
+                             select g;
+
+            var redDices = from g in e.AllDices
+                           where g.DiceColor == DiceColor.Red
+                           orderby g.Value descending
+                           select g;
+
+            if (redDices.Count() == 0 || redDices.Count() > stateManager.AttackerMaxDiceNum
+                || whiteDices.Count() != stateManager.DefenderMaxDiceNum)
+            {
+                stateManager.Error();
+            }
+            else
+            {
+                //judgement
+                ArmyViz attackerViz = riskMap.GetArmyViz(stateManager.AttackSource);
+                ArmyViz defenderViz = riskMap.GetArmyViz(stateManager.AttackDest);
+                var redIt = redDices.GetEnumerator();
+                var whiteIt = whiteDices.GetEnumerator();
+                int attackerLost = 0, defenderLost = 0;
+
+                while (redIt.MoveNext() && whiteIt.MoveNext())
+                {
+                    if (redIt.Current.Value > whiteIt.Current.Value)
+                    {
+                        defenderLost++;
+                    }
+                    else
+                    {
+                        attackerLost++;
+                    }
+                }
+
+                Debug.Assert(attackerViz.ArmyCount >= attackerLost + 1);
+                Debug.Assert(defenderViz.ArmyCount >= defenderLost);
+
+                bool attackerWin;
+                //owner changing
+                if (defenderViz.ArmyCount == defenderLost)  //win
+                {
+                    defenderViz.PlayerId = stateManager.ActivePlayerId;
+                    defenderViz.ArmyCount = redDices.Count() - attackerLost;
+                    attackerViz.ArmyCount -= redDices.Count();
+                    attackerWin = true;
+                }
+                else    //lose
+                {
+                    attackerViz.ArmyCount -= attackerLost;
+                    defenderViz.ArmyCount -= defenderLost;
+                    attackerWin = false;
+                }
+
+                stateManager.AttackDiceDetected(attackerLost, defenderLost, attackerWin);
+            }
+
+            refreshViews();
+        }
+
+        private void msgControl_AnimationCompleted(object sender, EventArgs e)
+        {
+            if (stateManager.State == GameState.AttackAnimation)
+            {
+                stateManager.Finish();
+                refreshViews();
+            }
         }
     }
 }
