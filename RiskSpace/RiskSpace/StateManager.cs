@@ -28,6 +28,8 @@ namespace RiskSpace
 
     public class StateManager
     {
+        readonly int[] CardSetToArmy = new int[] { 4, 6, 8, 10, 12, 15, 20, 25 };
+
         private PlayerManager playerManager;
 
         public GameState State { get; private set; }
@@ -45,12 +47,14 @@ namespace RiskSpace
         public int AttackerLost { get; private set; }
         public int DefenderLost { get; private set; }
         public bool IsAttackerWin { get; private set; }
+        public int CardSet { get; private set; }
 
         public StateManager(PlayerManager playerManager)
         {
             State = GameState.ChooseCountry;
             ActivePlayerId = 1;
             RoundCount = 0;
+            CardSet = 0;
             this.playerManager = playerManager;
         }
 
@@ -212,6 +216,22 @@ namespace RiskSpace
             this.DefenderLost = defenderLost;
             this.IsAttackerWin = attackerWin;
             Finish();
+        }
+
+        public void AddNewArmyByCard()
+        {
+            int newArmy;
+            if (CardSet < CardSetToArmy.Length)
+            {
+                newArmy = CardSetToArmy[CardSet];
+            }
+            else
+            {
+                newArmy = CardSetToArmy.Last() + (CardSet - CardSetToArmy.Length + 1) * 5;
+            }
+
+            AvailabeNewArmy += newArmy;
+            CardSet++;
         }
 
         /*public void Win(int movableArmy)

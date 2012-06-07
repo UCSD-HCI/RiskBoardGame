@@ -60,6 +60,9 @@
     <Compile Include="ArmyViz.xaml.cs">
       <DependentUpon>ArmyViz.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CardHolder.xaml.cs">
+      <DependentUpon>CardHolder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ControlButton.xaml.cs">
       <DependentUpon>ControlButton.xaml</DependentUpon>
     </Compile>
@@ -82,11 +85,16 @@
     <Compile Include="RiskMap.xaml.cs">
       <DependentUpon>RiskMap.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SoundPool.cs" />
     <Compile Include="StateManager.cs" />
     <Compile Include="WizardOzWindow.xaml.cs">
       <DependentUpon>WizardOzWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="ArmyViz.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CardHolder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -185,6 +193,42 @@
   <ItemGroup>
     <Resource Include="Images\army_L2_mask.png" />
     <Resource Include="Images\army_L3_mask.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Sound\AddArmy.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\AttackChooseSource.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\AttackFail.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\AttackL1.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\AttackL2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\AttackL3.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\AttackWin.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Sound\bgm.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="Sound\Error.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\RoundPass.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\Success.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

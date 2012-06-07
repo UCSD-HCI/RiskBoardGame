@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.IO.MemoryMappedFiles;
 using System.Threading;
 using System.Diagnostics;
+using System.IO;
 
 namespace RiskSpace
 {
@@ -33,13 +34,22 @@ namespace RiskSpace
         public event EventHandler<DiceEventArgs> DiceLocated;
         public event EventHandler<DiceEventArgs> DiceLabeled;
         public event EventHandler<DiceFinishedEventArgs> DiceFinished;
+        public event EventHandler<CardEventArgs> CardLocated;
+        public event EventHandler<CardFinishedEventArgs> CardFinished;
 
         public WizardOzWindow()
         {
             InitializeComponent();
 
             videoSource = new WriteableBitmap(640, 480, 72, 72, PixelFormats.Rgb24, null);
-            rectifiedTabletopMmf = MemoryMappedFile.OpenExisting("InteractiveSpaceRectifiedTabletop", MemoryMappedFileRights.Read);
+            try
+            {
+                rectifiedTabletopMmf = MemoryMappedFile.OpenExisting("InteractiveSpaceRectifiedTabletop", MemoryMappedFileRights.Read);
+            }
+            catch (FileNotFoundException e)
+            {
+                rectifiedTabletopMmf = null;
+            }
             buffer = new byte[imgSize];
             dices = new List<Dice>();
 
@@ -49,14 +59,38 @@ namespace RiskSpace
         public void RequestDice()
         {
             state = WizardOzState.Dice;
-            finishButton.IsEnabled = true;
+            finishButton.Visibility = Visibility.Visible;
             msgTextBlock.Text = "Locate and label dices. ";
             dices.Clear();
         }
 
+        public void RequestCard()
+        {
+            state = WizardOzState.Card;
+            cardPanel.Visibility = Visibility.Visible;
+            card1Button.IsEnabled = true;
+            card2Button.IsEnabled = true;
+            card3Button.IsEnabled = true;
+            msgTextBlock.Text = "Locate and verify cards.";
+        }
+
+        public void CancelCard()
+        {
+            if (state != WizardOzState.Card)
+            {
+                return;
+            }
+            cardPanel.Visibility = Visibility.Collapsed;
+            msgTextBlock.Text = "";
+            state = WizardOzState.Idle;
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            timer = new Timer(timerCallback, null, 0, 1000 / 12);
+            if (rectifiedTabletopMmf != null)
+            {
+                timer = new Timer(timerCallback, null, 0, 1000 / 12);
+            }
             videoImage.Source = videoSource;
         }
 
@@ -131,7 +165,7 @@ namespace RiskSpace
             switch (state)
             {
                 case WizardOzState.Dice:
-                    finishButton.IsEnabled = false;
+                    finishButton.Visibility = Visibility.Collapsed;
                     msgTextBlock.Text = "";
                     diceTextBox.Visibility = Visibility.Hidden;
                     state = WizardOzState.Idle;
@@ -144,6 +178,30 @@ namespace RiskSpace
                 default:
                     Debug.Assert(false);
                     break;
+            }
+        }
+
+        private void cardButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            int cardId = int.Parse(b.Tag as string);
+            b.IsEnabled = false;
+            if (CardLocated != null)
+            {
+                CardLocated(this, new CardEventArgs(cardId));
+            }
+        }
+
+        private void cardFinishButton_Click(object sender, RoutedEventArgs e)
+        {
+            bool isAccepted = sender == cardAcceptButton;
+            cardPanel.Visibility = Visibility.Collapsed;
+            msgTextBlock.Text = "";
+            state = WizardOzState.Idle;
+
+            if (CardFinished != null)
+            {
+                CardFinished(this, new CardFinishedEventArgs(isAccepted));
             }
         }
     }
@@ -163,6 +221,24 @@ namespace RiskSpace
         public DiceFinishedEventArgs(List<Dice> allDices)
         {
             this.AllDices = allDices;
+        }
+    }
+
+    public class CardEventArgs : EventArgs
+    {
+        public int CardId { get; private set; }
+        public CardEventArgs(int cardId)
+        {
+            this.CardId = cardId;
+        }
+    }
+
+    public class CardFinishedEventArgs : EventArgs
+    {
+        public bool IsAccepted { get; private set; }
+        public CardFinishedEventArgs(bool isAccepted)
+        {
+            this.IsAccepted = isAccepted;
         }
     }
 

@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Multitouch.Framework.WPF.Input;
 using System.Diagnostics;
+using System.Media;
 
 namespace RiskSpace
 {
@@ -24,6 +25,8 @@ namespace RiskSpace
         private StateManager stateManager;
         private PlayerManager playerManager;
         private WizardOzWindow wizardOzWindow;
+        private GameState previousState = GameState.Invalid;
+        private SoundPool soundPool;
 
         public MainWindow()
         {
@@ -37,12 +40,18 @@ namespace RiskSpace
             wizardOzWindow = new WizardOzWindow();
             wizardOzWindow.DiceLocated += new EventHandler<DiceEventArgs>(wizardOzWindow_DiceLocated);
             wizardOzWindow.DiceFinished += new EventHandler<DiceFinishedEventArgs>(wizardOzWindow_DiceFinished);
+            wizardOzWindow.CardLocated += new EventHandler<CardEventArgs>(wizardOzWindow_CardLocated);
+            wizardOzWindow.CardFinished += new EventHandler<CardFinishedEventArgs>(wizardOzWindow_CardFinished);
             wizardOzWindow.Show();
+
+            soundPool = new SoundPool();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             msgControl.UpdateMessage(stateManager, playerManager, riskMap);
+
+            soundPool.PlayBgm();
         }
 
         private void riskMap_CountryClick(object sender, CountryContactEventArgs e)
@@ -128,6 +137,21 @@ namespace RiskSpace
             {
                 diceViz.ClearDices();
             }
+
+            //card
+            CardHolder cardHolder = stateManager.ActivePlayerId == 1 ? cardHolder1 : cardHolder2;
+            if (stateManager.State == GameState.AddArmy && previousState != GameState.AddArmy)
+            {
+                cardHolder.Show();
+                wizardOzWindow.RequestCard();
+            }
+            else if (stateManager.State == GameState.AttackChooseSource)
+            {
+                cardHolder.Hide();
+                wizardOzWindow.CancelCard();
+            }
+
+            previousState = stateManager.State;
         }
 
         private void chooseCountry(string countryId)
@@ -170,6 +194,7 @@ namespace RiskSpace
             }               
                 
             refreshViews();
+            soundPool.Play(GameSound.AddArmy);
             
         }
 
@@ -184,6 +209,7 @@ namespace RiskSpace
             armyViz.AddArmy();
             stateManager.Next();
             refreshViews();
+            soundPool.Play(GameSound.AddArmy);
         }
 
         private void attackChooseSource(string countryId)
@@ -214,6 +240,7 @@ namespace RiskSpace
             //attackArmyViz.Visibility = Visibility.Visible;
 
             refreshViews();
+            soundPool.Play(GameSound.AttackChooseSource);
         }
 
         private void attackChooseDest(string countryId)
@@ -227,6 +254,20 @@ namespace RiskSpace
             int maxDiceNum = Math.Min(2, armyViz.ArmyCount);
             stateManager.AttackDestSelected(countryId, maxDiceNum);
             refreshViews();
+
+            ArmyViz attacker = riskMap.GetArmyViz(stateManager.AttackSource);
+            if (attacker.ArmyCount < 5)
+            {
+                soundPool.Play(GameSound.AttackL1);
+            }
+            else if (attacker.ArmyCount < 10)
+            {
+                soundPool.Play(GameSound.AttackL2);
+            }
+            else
+            {
+                soundPool.Play(GameSound.AttackL3);
+            }
         }
 
         private void controlButton_OkButtonClick(object sender, EventArgs e)
@@ -253,6 +294,7 @@ namespace RiskSpace
             {
                 case GameState.AttackChooseSource:
                     stateManager.RoundPass();
+                    soundPool.Play(GameSound.RoundPass);
                     break;
 
                 default:
@@ -267,6 +309,7 @@ namespace RiskSpace
         {
             Debug.Assert(stateManager.State == GameState.AttackWaitDice);
             diceViz.ShowDice(e.Dice);
+            soundPool.Play(GameSound.Success);
         }
 
 
@@ -288,6 +331,7 @@ namespace RiskSpace
                 || whiteDices.Count() != stateManager.DefenderMaxDiceNum)
             {
                 stateManager.Error();
+                soundPool.Play(GameSound.Error);
             }
             else
             {
@@ -330,9 +374,44 @@ namespace RiskSpace
                 }
 
                 stateManager.AttackDiceDetected(attackerLost, defenderLost, attackerWin);
+
+                if (attackerWin)
+                {
+                    soundPool.Play(GameSound.AttackWin);
+                }
+                else
+                {
+                    soundPool.Play(GameSound.AttackFail);
+                }
             }
 
             refreshViews();
+        }
+
+        void wizardOzWindow_CardFinished(object sender, CardFinishedEventArgs e)
+        {
+            Debug.Assert(stateManager.State == GameState.AddArmy);
+            CardHolder cardHolder = stateManager.ActivePlayerId == 1 ? cardHolder1 : cardHolder2;
+            cardHolder.MatchFinished(e.IsAccepted);
+
+            if (e.IsAccepted)
+            {
+                stateManager.AddNewArmyByCard();
+                refreshViews();
+                soundPool.Play(GameSound.Success);
+            }
+            else
+            {
+                wizardOzWindow.RequestCard();
+                soundPool.Play(GameSound.Error);
+            }
+        }
+
+        void wizardOzWindow_CardLocated(object sender, CardEventArgs e)
+        {
+            Debug.Assert(stateManager.State == GameState.AddArmy);
+            CardHolder cardHolder = stateManager.ActivePlayerId == 1 ? cardHolder1 : cardHolder2;
+            cardHolder.LocateCard(e.CardId);
         }
 
         private void msgControl_AnimationCompleted(object sender, EventArgs e)

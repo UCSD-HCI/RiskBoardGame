@@ -13,6 +13,8 @@
         <my:ControlButton x:Name="controlButton1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,200" OkButtonClick="controlButton_OkButtonClick" CancelButtonClick="controlButton_CancelButtonClick" NextButtonClick="controlButton_NextButtonClick"/>
         <my:ControlButton x:Name="controlButton2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,200" OkButtonClick="controlButton_OkButtonClick" CancelButtonClick="controlButton_CancelButtonClick" NextButtonClick="controlButton_NextButtonClick"/>
         <my:DiceViz x:Name="diceViz" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <my:CardHolder x:Name="cardHolder1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,200" IsHitTestVisible="False"/>
+        <my:CardHolder x:Name="cardHolder2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,200" IsHitTestVisible="False"/>
     </Grid>
 </mt:Window>
     
