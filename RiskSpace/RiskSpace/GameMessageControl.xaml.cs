@@ -124,10 +124,13 @@ namespace RiskSpace
                 motionOutAnim.Completed += new EventHandler(motionOutAnim_Completed);
 
                 msgTextBlock.BeginAnimation(TextBlock.OpacityProperty, opacityInAnim, HandoffBehavior.SnapshotAndReplace);
-                msgTextBlock.BeginAnimation(TextBlock.OpacityProperty, opacityOutAnim, HandoffBehavior.Compose);
-
                 textMotionTrans.BeginAnimation(TranslateTransform.YProperty, motionInAnim, HandoffBehavior.SnapshotAndReplace);
-                textMotionTrans.BeginAnimation(TranslateTransform.YProperty, motionOutAnim, HandoffBehavior.Compose);
+
+                if (stateManager.State == GameState.AttackAnimation)
+                {
+                    msgTextBlock.BeginAnimation(TextBlock.OpacityProperty, opacityOutAnim, HandoffBehavior.Compose);
+                    textMotionTrans.BeginAnimation(TranslateTransform.YProperty, motionOutAnim, HandoffBehavior.Compose);
+                }
             }
             
         }

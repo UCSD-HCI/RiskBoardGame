@@ -255,7 +255,8 @@ namespace RiskSpace
 
         private void refreshAvailabeNewArmy()
         {
-            AvailabeNewArmy = Math.Max(3, (int)(playerManager.GetPlayer(ActivePlayerId).CountryNum / 1.5));
+            //AvailabeNewArmy = Math.Max(3, (int)(playerManager.GetPlayer(ActivePlayerId).CountryNum / 1.5));
+            AvailabeNewArmy = 25;
         }
     }
 }

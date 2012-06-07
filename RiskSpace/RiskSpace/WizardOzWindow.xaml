@@ -1,7 +1,7 @@
 ﻿<Window x:Class="RiskSpace.WizardOzWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Wizard-Oz" Height="617" Width="664" Loaded="Window_Loaded">
+        Title="Wizard-Oz" Height="670" Width="664" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
